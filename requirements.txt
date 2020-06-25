@@ -7,6 +7,6 @@ numpy==1.19.0
 pathspec==0.8.0
 pycparser==2.20
 regex==2020.6.8
-tcod==11.13.6
+tcod==11.14
 toml==0.10.1
 typed-ast==1.4.1
