@@ -29,6 +29,10 @@ class GameMap:
         self.explored = np.full((width, height), fill_value=False, order="F")
 
     @property
+    def gamemap(self) -> GameMap:
+        return self
+
+    @property
     def actors(self) -> Interator[Actor]:
         """
         Iterate over this maps living actors.
