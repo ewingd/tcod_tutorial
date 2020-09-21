@@ -10,7 +10,11 @@ import components.ai
 import components.inventory
 from components.base_component import BaseComponent
 from components.fighter import Fighter
-from input_handlers import SingleRangedAttackHandler, AreaRangedAttackHandler
+from input_handlers import (
+    ActionOrHandler,
+    AreaRangedAttackHandler,
+    SingleRangedAttackHandler,
+)
 
 if TYPE_CHECKING:
     from entity import Actor, Item
@@ -19,7 +23,7 @@ if TYPE_CHECKING:
 class Consumable(BaseComponent):
     parent: Item
 
-    def get_action(self, consumer: Actor) -> Optional[actions.Action]:
+    def get_action(self, consumer: Actor) -> Optional[ActionOrHandler]:
         """Try to return the action for this item."""
         return actions.ItemAction(consumer, self.parent)
 
@@ -43,15 +47,14 @@ class ConfusionConsumable(Consumable):
     def __init__(self, number_of_turns: int):
         self.number_of_turns = number_of_turns
 
-    def get_action(self, consumer: Actor) -> Optional[actions.Action]:
+    def get_action(self, consumer: Actor) -> Optional[SingleRangedAttackHandler]:
         self.engine.message_log.add_message(
             "Select a target location.", color.needs_target
         )
-        self.engine.event_handler = SingleRangedAttackHandler(
+        return SingleRangedAttackHandler(
             self.engine,
             callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
         )
-        return None
 
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
@@ -129,18 +132,16 @@ class FireballDamageConsumable(Consumable):
         self.damage = damage
         self.radius = radius
 
-    def get_action(self, consumer: Actor) -> Optional[actions.Action]:
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
         self.engine.message_log.add_message(
             "Select a target location.", color.needs_target
         )
 
-        self.engine.event_handler = AreaRangedAttackHandler(
+        return AreaRangedAttackHandler(
             self.engine,
             radius=self.radius,
             callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
         )
-
-        return None
 
     def activate(self, action: actions.ItemAction) -> None:
         target_xy = action.target_xy
