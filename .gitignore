@@ -3,3 +3,6 @@ bin
 include
 lib
 __pycache__
+
+# Saved games
+*.sav
