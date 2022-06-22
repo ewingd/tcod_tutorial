@@ -3,7 +3,7 @@ attrs==19.3.0
 black==19.10b0
 cffi==1.14.0
 click==7.1.2
-numpy==1.19.0
+numpy==1.22.0
 pathspec==0.8.0
 pycparser==2.20
 regex==2020.6.8
